@@ -1,0 +1,28 @@
+{
+    "common": {
+        "vbox_image": "ubuntu/xenial64",
+        "pod_network_cidr": "10.244.0.0/16",
+        "kubernetes_version": "1.14.5-00"
+    },
+    "nodes": {
+        "master": [
+            {
+                "memory": "2048",
+                "cpu": "2",
+                "ip": "10.0.0.10"
+            }
+        ],
+        "workers": [
+            {
+                "memory": "2048",
+                "cpu": "2",
+                "ip": "10.0.0.31"
+            },
+            {
+                "memory": "2048",
+                "cpu": "2",
+                "ip": "10.0.0.32"
+            }
+        ]
+    }
+}

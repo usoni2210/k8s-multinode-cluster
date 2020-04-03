@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Copy join_cmd.txt on node
+      copy:
+        src: ../credentials/join_cmd.txt
+        dest: /home/vagrant/join_cmd.txt
+        mode: '0777'
+
+    - name: join cluster
+      become: true
+      shell: /home/vagrant/join_cmd.txt >> node_join.txt
+      args:
+        chdir: /home/vagrant
+        creates: node_join.txt

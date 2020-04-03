@@ -1,0 +1,49 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: initialize the cluster
+      shell: kubeadm init --pod-network-cidr={{ pod_cidr }} --apiserver-advertise-address={{ ip_address }} >> cluster_initialized.txt
+      args:
+        chdir: /home/vagrant
+        creates: cluster_initialized.txt
+
+    - name: create .kube directory
+      become: yes
+      become_user: vagrant
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        mode: 0755
+
+    - name: copy admin.conf to user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/vagrant/.kube/config
+        remote_src: yes
+        owner: vagrant
+
+    - name: fetch config file
+      fetch:
+        src: /home/vagrant/.kube/config
+        dest: ../credentials/kube-config
+        flat: yes
+
+    - name: install Pod network
+      become: yes
+      become_user: vagrant
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml >> pod_network_setup.txt
+      args:
+        chdir: $HOME
+        creates: pod_network_setup.txt
+
+    - name: get join command
+      shell: kubeadm token create --print-join-command >> join_cmd.txt
+      args:
+        chdir: /home/vagrant
+        creates: join_cmd.txt
+
+    - name: fetch join cmd
+      fetch:
+        src: /home/vagrant/join_cmd.txt
+        dest: ../credentials/join_cmd.txt
+        flat: yes
