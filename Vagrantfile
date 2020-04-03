@@ -2,19 +2,23 @@ load "utils/JsonConfig.rb"
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
+# To fetch data from config.json file
 configFileName = "config.json"
 $json_config = JsonConfig.new(configFileName)
 
 Vagrant.configure(2) do |config|
+	# fetch VBox Image Name from config.json
 	config.vm.box = $json_config.getVBoxImageName()
+	# fetch node types from config.json file
 	node_types = $json_config.getNodeTypes()
 
+	# start creating nodes
 	node_types.each do |node_type|
-		node_num = $json_config.getNodeNum(node_type)
-		node_num.times do |i|
+		$json_config.getNodeNum(node_type).times do |i|
 			config.vm.define "#{node_type}_#{i + 1}" do |config|
 				config.vm.hostname = "#{node_type}-#{i + 1}"
 				config.vm.network :private_network, ip: $json_config.getNodeIP(node_type, i)
+
 				set_provider_config(config, node_type, i)
 				start_ansible(config, node_type, i)
 			end
@@ -22,6 +26,7 @@ Vagrant.configure(2) do |config|
 	end
 end
 
+# Function for set config for provider
 def set_provider_config(config, node_type, index)
 	config.vm.provider :virtualbox do |vbox|
 		vbox.memory = $json_config.getNodeMemory(node_type, index)
@@ -29,6 +34,7 @@ def set_provider_config(config, node_type, index)
 	end
 end
 
+# Function for start ansibles on node
 def start_ansible(config, node_type, i)
 	k8s_version = $json_config.getKubernetesVersion()
 	pod_cidr = $json_config.getPodNetworkCIDR()

@@ -1,4 +1,7 @@
+# setup worker node
+# To add node in k8s cluster
 - hosts: all
+  name: Setup Worker Node
   become: true
   tasks:
     - name: Copy join_cmd.txt on node

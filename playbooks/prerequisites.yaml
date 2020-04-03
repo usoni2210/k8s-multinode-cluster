@@ -1,3 +1,4 @@
+# install essiential software needed for each node
 - hosts: all
   name: Prerequisites
   become: yes

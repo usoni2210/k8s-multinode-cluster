@@ -1,4 +1,7 @@
+# setup master node
+# fetch kubeadm join cmd and kube-config
 - hosts: all
+  name: Setup Master Node
   become: yes
   tasks:
     - name: initialize the cluster

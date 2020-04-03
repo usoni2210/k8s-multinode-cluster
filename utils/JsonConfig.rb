@@ -1,5 +1,11 @@
 #!/usr/bin/ruby
 
+######################################
+# Name : JsonConfig.rb
+# Author : Umesh Soni
+# Desc : class to fetch data from json file
+######################################
+
 require "json"
 
 class JsonConfig
